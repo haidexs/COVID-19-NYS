@@ -1,0 +1,12 @@
+name: COVID-19-NYC
+title: COVID-19-NYC
+username:
+account: haidexs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2131936
+bundleId: 3025310
+url: https://haidexs.shinyapps.io/COVID-19-NYC/
+when: 1587096349.75977
+asMultiple: FALSE
+asStatic: FALSE
