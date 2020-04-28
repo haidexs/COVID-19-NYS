@@ -19,36 +19,58 @@ library(ggthemes)
 library(patchwork)
 library(showtext)
 library(scales)
+library(DT)
 
 powerbi_rEnableShowTextForCJKLanguages =  1
 font_add_google("Noto Sans SC", "GSC")
 
 # Define UI for dataset viewer application
 ui = fluidPage(
-    sidebarLayout(
-        sidebarPanel(
-            selectInput("region", "选择区域：", choices = c("纽约州", "纽约市", "LIC-11101", "哥伦比亚大学-10027")),
-            helpText("    纽约州和纽约市数据来自州政府；"),
-            helpText("    LIC和哥伦比亚大学数据来自纽约市政府;"),
-            helpText("    两者的记录方法不同，体现在纽约州以病例的上报日期为统计依据，而纽约市以确诊时间为依据。"),
-            
-            # # these options will be added later
-            radioButtons("pos_rate", "选择第二纵轴显示数据", choiceNames = c("确诊率", "住院/死亡数"), choiceValues = c("YES", "NO")), # data source: NYS or NYC
-            helpText("    只有纽约州提供住院和死亡人数数据"),
-            textInput("data_length", "输入想要查看数据的天数", value = 30),
-            # helpText("    若超过有数据")
-            # textInput("zipcode", "输入邮编：", value = "11101"), # other zipcodes
-            # radioButtons("data_type", NULL, choiceNames = c("新增", "累计"), choiceValues = c("New", "Total")), # new or total (total = cumulative)
-            # radioButtons("data_source", "数据源", choiceNames = c("州政府", "市政府"), choiceValues = c("NYS", "NYC")), # data source: NYS or NYC
-            width = 3
-        ),
-        mainPanel(
-            plotOutput("dualplot"),
-            tableOutput("recent_data"),
-            # plotOutput("")
-            width = 8
+    wellPanel(
+        fluidRow(
+            column(3,
+                   selectInput("region", "选择区域：", choices = c("纽约州", "纽约市", "LIC-11101", "哥伦比亚大学-10027")),
+                   helpText("    纽约州和纽约市数据来自州政府；"),
+                   helpText("    LIC和哥伦比亚大学数据来自纽约市政府;"),
+                   helpText("    两者的记录方法不同，体现在纽约州以病例的上报日期为统计依据，而纽约市以确诊时间为依据。"),
+            ),
+            column(3,
+                   # # these options will be added later
+                   radioButtons("pos_rate", "选择第二纵轴显示数据", choiceNames = c("确诊率", "住院/死亡数"), choiceValues = c("YES", "NO")), # data source: NYS or NYC
+                   helpText("    只有纽约州提供住院和死亡人数数据")
+                   # textInput("data_length", "输入想要查看数据的天数", value = 20)
+                   # actionButton("showbutton", label = "显示数据")
+            )
         )
+    ),
+    fluidRow(
+        column(7, plotOutput("dualplot")),
+        column(5, DT::dataTableOutput("recent_data", width = "100%"))
     )
+
+    # sidebarLayout(
+    #     sidebarPanel(
+    #         selectInput("region", "选择区域：", choices = c("纽约州", "纽约市", "LIC-11101", "哥伦比亚大学-10027")),
+    #         helpText("    纽约州和纽约市数据来自州政府；"),
+    #         helpText("    LIC和哥伦比亚大学数据来自纽约市政府;"),
+    #         helpText("    两者的记录方法不同，体现在纽约州以病例的上报日期为统计依据，而纽约市以确诊时间为依据。"),
+    # 
+    #         # # these options will be added later
+    #         radioButtons("pos_rate", "选择第二纵轴显示数据", choiceNames = c("确诊率", "住院/死亡数"), choiceValues = c("YES", "NO")), # data source: NYS or NYC
+    #         helpText("    只有纽约州提供住院和死亡人数数据"),
+    #         # textInput("data_length", "输入想要查看数据的天数", value = 30),
+    #         # helpText("    若超过有数据")
+    #         # textInput("zipcode", "输入邮编：", value = "11101"), # other zipcodes
+    #         # radioButtons("data_type", NULL, choiceNames = c("新增", "累计"), choiceValues = c("New", "Total")), # new or total (total = cumulative)
+    #         # radioButtons("data_source", "数据源", choiceNames = c("州政府", "市政府"), choiceValues = c("NYS", "NYC")), # data source: NYS or NYC
+    #         width = 3
+    #     ),
+    #     mainPanel(
+    #         plotOutput("dualplot"),
+    #         DT::dataTableOutput("recent_data"),
+    #         width = 9
+    #     )
+    # )
 )
 
 # Define server logic required to summarize and view the selected dataset
@@ -72,15 +94,18 @@ server = function(input, output) {
     coeff = 0.15
 
     data_to_plot = reactive({
+        # if (input$data_length == 0) {
+        #     return()
+        # }
         region_code = switch(input$region,
                              "纽约州" = "NYS",
                              "纽约市" = "NYC",
-                             "11101" = "LIC",
-                             "10027" = "ColumbiaUniv")
-                             # "10019" = "ColumbusCircle_1",
-                             # "10044" = "ColumbusCircle_2")
+                             "LIC-11101" = "LIC",
+                             "哥伦比亚大学-10027" = "ColumbiaUniv")
+        # "10019" = "ColumbusCircle_1",
+        # "10044" = "ColumbusCircle_2")
         # print(region_code)
-
+        
         data_tmp = select(covid_data, Date, contains(region_code)) %>%
             rename(MMDD = Date,
                    NewPositive = paste(region_code, "New.Positive", sep = "."), NewTested = paste(region_code, "New.Tested", sep = "."), 
@@ -203,32 +228,39 @@ server = function(input, output) {
         to_plot = plot_right_y +
             scale_x_date(date_breaks = "3 days", date_labels = "%m/%d") + 
             # labs(title = "NYS COVID-19") +
-            labs(title = paste(region, "新冠疫情数据", sep = ""), x = "") +
+            labs(title = paste(region, "新冠疫情数据", sep = ""), x = "日期") +
             # scale_x_date(name = "日期", date_breaks = "3 days") +
-            theme_economist() + 
+            theme_bw() + 
             theme(text=element_text(family="GSC", size=10), legend.position = "top") + # legend.position = c(0.1, 0.83)
             theme(plot.title = element_text(face = "bold", size = 10)) +
             theme(legend.text = element_text(size = 8), 
                   axis.text.x = element_text(angle=0, hjust=1),
-                  axis.ticks.length.y.left = unit(-0.2, "cm"), axis.ticks.length.y.right = unit(.05, "cm"),
+                  axis.ticks.length.y.left = unit(.05, "cm"), axis.ticks.length.y.right = unit(.05, "cm"),
                   aspect.ratio = 0.5)
         
         plot(to_plot)
         showtext_end()
     })
     
-    data_length = reactive({
-        max(input$data_length, length(data_to_plot()[ ,1]))
-    })
+    # data_length = reactive({
+    #     min(input$data_length, length(data_to_plot()[ ,1]))
+    # })
 
-    output$recent_data = renderTable({
-        # data1 = data_to_plot()
-        # region = region_name()
-        data_to_plot()
-        
-    },
-    spacing = c("s", "xs", "m", "l"), width = "auto", align = NULL,
-    rownames = FALSE, colnames = TRUE
+    output$recent_data = DT::renderDataTable({
+        # renderTable({
+        data1 = data_to_plot()
+        # nrow = length(data1[ , 1])
+        region = region_name()
+        data_att = total_or_new()
+        # data_nrow = as.numeric(data_length())
+        # data_nrow = nrow
+        data_region_att = paste(region, data_att, sep="\n")
+        colnames(data1) = c("日期", paste(data_region_att, c("检测","确诊","死亡","住院"), sep=""))
+        # return(data1[(nrow-data_nrow+1):nrow, 1:5])
+        return(data1[ , 1:5])
+    }
+    # spacing = "s", width = "auto", align = "c",
+    # rownames = FALSE, colnames = TRUE
     )
 }
 
