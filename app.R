@@ -255,9 +255,10 @@ server = function(input, output) {
         # data_nrow = as.numeric(data_length())
         # data_nrow = nrow
         data_region_att = paste(region, data_att, sep="\n")
-        colnames(data1) = c("日期", paste(data_region_att, c("检测","确诊","死亡","住院"), sep=""))
+        data1$pos_rate = format(round(data1$Positive / data1$Tested, 3), nsmall = 3)
+        colnames(data1) = c("日期", paste(data_region_att, c("确诊","检测","住院","死亡"), sep=""), "data_att", "确诊率")
         # return(data1[(nrow-data_nrow+1):nrow, 1:5])
-        return(data1[ , 1:5])
+        return(data1[ , c(1:5,7)])
     }
     # spacing = "s", width = "auto", align = "c",
     # rownames = FALSE, colnames = TRUE
