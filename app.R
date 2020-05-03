@@ -184,7 +184,7 @@ server <- function(input, output) {
     
     # plot
     output$dualplot = renderPlot({
-        showtext_begin()
+        
         data1 = data_to_plot()
         data_source = data_source()
         region = region_name()
@@ -197,6 +197,8 @@ server <- function(input, output) {
         }
         left_axis_max = max(c(0, data1$Tested), na.rm = TRUE)
         right_axis_max = max(c(0, data1$Admitted), na.rm = TRUE)
+        
+        showtext_begin()
         
         plot_left_y = ggplot(data1, aes(x=as.Date(MMDD, format="%m/%d"))) +
             geom_bar(aes(y=Tested, fill=col_tested), stat="identity", size=0.1, alpha=0.9) +
@@ -254,11 +256,12 @@ server <- function(input, output) {
             # labs(title = "NYS COVID-19") +
             labs(title = paste(region, "新冠疫情数据", sep = ""), x = "日期") +
             # scale_x_date(name = "日期", date_breaks = "3 days") +
-            theme_bw() + 
-            theme(text=element_text(family="GSC", size=10), legend.position = "top") + # legend.position = c(0.1, 0.83)
-            theme(plot.title = element_text(face = "bold", size = 10)) +
+            theme(text=element_text(family="GSC")) +
+            theme_bw() +
+            theme(legend.position = "top") + # legend.position = c(0.1, 0.83)
+            theme(plot.title = element_text(face = "bold", size = 9)) +
             theme(legend.text = element_text(size = 8), 
-                  axis.text.x = element_text(angle=0, hjust=1),
+                  axis.text.x = element_text(angle=330, hjust=0),
                   axis.ticks.length.y.left = unit(.05, "cm"), axis.ticks.length.y.right = unit(.05, "cm"),
                   aspect.ratio = 0.5)
         
