@@ -12,6 +12,7 @@ new_data = rbind(today_data, old_data)
 
 
 NYC_Total_Pos_Tested_by_Date = as.data.frame(new_data %>% group_by(Date) %>% summarise(TotalPositive = sum(Positive), TotalTested = sum(Tested)))
+tail(NYC_Total_Pos_Tested_by_Date)
 
 NYC_dataset = read.csv("NYC_dataset.csv", header = TRUE, sep = ",")
 NYC_dataset$Date = format(as.Date(NYC_dataset$Date, format = "%m/%d"), "%m/%d")
