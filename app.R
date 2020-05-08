@@ -286,7 +286,7 @@ server <- function(input, output) {
         data1$pos_rate = format(round(data1$Positive / data1$Tested, 3), nsmall = 3)
         colnames(data1) = c("日期", paste(data_region_att, c("确诊","检测","住院","死亡"), sep=""), "data_att", "确诊率")
         # return(data1[(nrow-data_nrow+1):nrow, 1:5])
-        return(data1[ , c(1:5,7)])
+        return(data1[ , c(1:5,7)] %>% map_df(rev))
     }
     # spacing = "s", width = "auto", align = "c",
     # rownames = FALSE, colnames = TRUE
