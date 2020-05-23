@@ -8,6 +8,7 @@ today_data = read.csv("../coronavirus-data/today.csv", header = FALSE)
 colnames(today_data) = c("Zipcode", "Positive", "Tested", "Percent")
 today_data$Zipcode[1] = "Unknown"
 today_data$Date = format(Sys.Date(), "%m/%d")
+today_data[is.na(today_data)] = 0
 new_data = rbind(today_data, old_data)
 
 
