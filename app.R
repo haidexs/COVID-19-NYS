@@ -299,8 +299,9 @@ server <- function(input, output) {
     output$positve_tested_zipcode = renderText({
         zip_code = zip_code()
         zip_data = read.csv("tests-by-zcta.csv", header = TRUE, sep = ",")
-        positive = zip_data[zip_data$MODZCTA == zip_code, ]$Positive[2]
-        tests = zip_data[zip_data$MODZCTA == zip_code, ]$Total[2]
+        colnames(zip_data) = c("Zipcode", "Positive", "Tested", "Percent")
+        positive = zip_data[zip_data$Zipcode == zip_code, ]$Positive[2]
+        tests = zip_data[zip_data$Zipcode == zip_code, ]$Tested[2]
         return_info = c("邮编为", zip_code, "的地区累计确诊 ", as.character(positive), 
                         "，累计检测 ", as.character(tests), 
                         "，确诊率为 ", format(round(positive/tests, 3), nsmall = 3),
