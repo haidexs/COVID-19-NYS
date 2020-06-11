@@ -5,8 +5,10 @@ old_data = read.csv("positive_tests_zipcode.csv", header = TRUE)
 old_data$Date = format(as.Date(old_data$Date, format = "%m/%d"), "%m/%d")
 
 today_data = read.csv("../coronavirus-data/today.csv", header = FALSE)
-colnames(today_data) = c("Zipcode", "Positive", "Tested", "Percent")
-today_data$Zipcode[1] = "Unknown"
+# colnames(today_data) = c("Zipcode", "Positive", "Tested", "Percent")
+colnames(today_data) = c("Zipcode", "Positive", "Tested")
+today_data$Percent = today_data$Positive / today_data$Tested
+# today_data$Zipcode[1] = "Unknown"
 today_data$Date = format(Sys.Date(), "%m/%d")
 today_data[is.na(today_data)] = 0
 new_data = rbind(today_data, old_data)
