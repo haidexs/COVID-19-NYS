@@ -179,6 +179,7 @@ server <- function(input, output) {
                 filter(!is.na(Positive))
             # data_att = "新增"
         }
+        data_return$Tested[data_return$Tested < 0] = 0
         return(data_return)
     })
     
