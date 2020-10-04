@@ -5,8 +5,8 @@ account: haidexs
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2148290
-bundleId: 3699735
+bundleId: 3701723
 url: https://haidexs.shinyapps.io/COVID-19-NYS/
-when: 1601773259.87732
+when: 1601842554.84945
 asMultiple: FALSE
 asStatic: FALSE
