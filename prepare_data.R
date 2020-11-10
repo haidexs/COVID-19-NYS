@@ -20,15 +20,15 @@ tail(NYC_Total_Pos_Tested_by_Date)
 NYC_dataset = read.csv("NYC_dataset.csv", header = TRUE, sep = ",")
 NYC_dataset$Date = format(as.Date(NYC_dataset$Date, format = "%m/%d"), "%m/%d")
 
-today_case_hosp_death = read.csv("../coronavirus-data/case-hosp-death.csv", header = TRUE, sep = ",")
-today_case_hosp_death$DATE_OF_INTEREST = format(as.Date(today_case_hosp_death$DATE_OF_INTEREST, format = "%m/%d"), "%m/%d")
+today_case_hosp_death = read.csv("../coronavirus-data/trends/data-by-day.csv", header = TRUE, sep = ",")
+today_case_hosp_death$date_of_interest = format(as.Date(today_case_hosp_death$date_of_interest, format = "%m/%d/%y"), "%m/%d")
 
-for (i in 1:length(today_case_hosp_death$DATE_OF_INTEREST)){
-  NYC_dataset$NYC.New.Positive[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$DATE_OF_INTEREST[i], format = "%m/%d")] = 
+for (i in 1:length(today_case_hosp_death$date_of_interest)){
+  NYC_dataset$NYC.New.Positive[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
     today_case_hosp_death$CASE_COUNT[i]
-  NYC_dataset$NYC.New.Hospitolized[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$DATE_OF_INTEREST[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.New.Hospitolized[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
     today_case_hosp_death$HOSPITALIZED_COUNT[i]
-  NYC_dataset$NYC.New.Death[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$DATE_OF_INTEREST[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.New.Death[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
     today_case_hosp_death$DEATH_COUNT[i]
 }
 # NYC_dataset$NYC.New.Positive = today_case_hosp_death$CASE_COUNT
