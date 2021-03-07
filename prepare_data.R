@@ -9,7 +9,7 @@ today_data = read.csv("../coronavirus-data/today.csv", header = FALSE)
 colnames(today_data) = c("Zipcode", "Positive", "Tested")
 today_data$Percent = today_data$Positive / today_data$Tested
 # today_data$Zipcode[1] = "Unknown"
-today_data$Date = format(Sys.Date(), "%m/%d")
+today_data$Date = format(Sys.Date(), "%m/%d/%y")
 today_data[is.na(today_data)] = 0
 new_data = rbind(today_data, old_data)
 
@@ -18,17 +18,17 @@ NYC_Total_Pos_Tested_by_Date = as.data.frame(new_data %>% group_by(Date) %>% sum
 tail(NYC_Total_Pos_Tested_by_Date)
 
 NYC_dataset = read.csv("NYC_dataset.csv", header = TRUE, sep = ",")
-NYC_dataset$Date = format(as.Date(NYC_dataset$Date, format = "%m/%d"), "%m/%d")
+NYC_dataset$Date = format(as.Date(NYC_dataset$Date, format = "%m/%d/%y"), "%m/%d/%y")
 
 today_case_hosp_death = read.csv("../coronavirus-data/trends/data-by-day.csv", header = TRUE, sep = ",")
-today_case_hosp_death$date_of_interest = format(as.Date(today_case_hosp_death$date_of_interest, format = "%m/%d/%y"), "%m/%d")
+today_case_hosp_death$date_of_interest = format(as.Date(today_case_hosp_death$date_of_interest, format = "%m/%d/%y"), "%m/%d/%y")
 
 for (i in 1:length(today_case_hosp_death$date_of_interest)){
-  NYC_dataset$NYC.New.Positive[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.New.Positive[as.Date(NYC_dataset$Date, format = "%m/%d/%y") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d/%y")] = 
     today_case_hosp_death$CASE_COUNT[i]
-  NYC_dataset$NYC.New.Hospitolized[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.New.Hospitolized[as.Date(NYC_dataset$Date, format = "%m/%d/%y") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d/%y")] = 
     today_case_hosp_death$HOSPITALIZED_COUNT[i]
-  NYC_dataset$NYC.New.Death[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.New.Death[as.Date(NYC_dataset$Date, format = "%m/%d/%y") == as.Date(today_case_hosp_death$date_of_interest[i], format = "%m/%d/%y")] = 
     today_case_hosp_death$DEATH_COUNT[i]
 }
 # NYC_dataset$NYC.New.Positive = today_case_hosp_death$CASE_COUNT
@@ -36,19 +36,19 @@ for (i in 1:length(today_case_hosp_death$date_of_interest)){
 # NYC_dataset$NYC.New.Death = today_case_hosp_death$DEATH_COUNT
 # NYC_dataset$Date = format(as.Date(NYC_dataset$Date, format = "%m/%d/%y"), "%m/%d")
 
-NYC_dataset = NYC_dataset %>% add_row(Date = format(Sys.Date(), "%m/%d"))
-NYC_dataset$LIC.Total.Positive[as.Date(NYC_dataset$Date, format("%m/%d")) == as.Date(Sys.Date(), "%m/%d")] = 
+NYC_dataset = NYC_dataset %>% add_row(Date = format(Sys.Date(), "%m/%d/%y"))
+NYC_dataset$LIC.Total.Positive[as.Date(NYC_dataset$Date, format("%m/%d/%y")) == as.Date(Sys.Date(), "%m/%d/%y")] = 
   today_data$Positive[today_data$Zipcode == 11101]
-NYC_dataset$LIC.Total.Tested[as.Date(NYC_dataset$Date, format("%m/%d")) == as.Date(Sys.Date(), "%m/%d")] = 
+NYC_dataset$LIC.Total.Tested[as.Date(NYC_dataset$Date, format("%m/%d/%y")) == as.Date(Sys.Date(), "%m/%d/%y")] = 
   today_data$Tested[today_data$Zipcode == 11101]
-NYC_dataset$ColumbiaUniv.Total.Positive[as.Date(NYC_dataset$Date, format("%m/%d")) == as.Date(Sys.Date(), "%m/%d")] = 
+NYC_dataset$ColumbiaUniv.Total.Positive[as.Date(NYC_dataset$Date, format("%m/%d/%y")) == as.Date(Sys.Date(), "%m/%d/%y")] = 
   today_data$Positive[today_data$Zipcode == 10027]
-NYC_dataset$ColumbiaUniv.Total.Tested[as.Date(NYC_dataset$Date, format("%m/%d")) == as.Date(Sys.Date(), "%m/%d")] = 
+NYC_dataset$ColumbiaUniv.Total.Tested[as.Date(NYC_dataset$Date, format("%m/%d/%y")) == as.Date(Sys.Date(), "%m/%d/%y")] = 
   today_data$Tested[today_data$Zipcode == 10027]
 
 
 for (i in 1:length(NYC_Total_Pos_Tested_by_Date$Date)){
-  NYC_dataset$NYC.Total.Tested[as.Date(NYC_dataset$Date, format = "%m/%d") == as.Date(NYC_Total_Pos_Tested_by_Date$Date[i], format = "%m/%d")] = 
+  NYC_dataset$NYC.Total.Tested[as.Date(NYC_dataset$Date, format = "%m/%d/%y") == as.Date(NYC_Total_Pos_Tested_by_Date$Date[i], format = "%m/%d")] = 
     NYC_Total_Pos_Tested_by_Date$TotalTested[i]
 }
 

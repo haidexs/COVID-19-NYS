@@ -201,7 +201,7 @@ server <- function(input, output) {
         
         showtext_begin()
         
-        plot_left_y = ggplot(data1, aes(x=as.Date(MMDD, format="%m/%d"))) +
+        plot_left_y = ggplot(data1, aes(x=as.Date(MMDD, format="%m/%d/%y"))) +
             geom_bar(aes(y=Tested, fill=col_tested), stat="identity", size=0.1, alpha=0.9) +
             geom_bar(aes(y=Positive, fill=col_positive), stat="identity", size=0.1, alpha=1)
         
@@ -253,7 +253,7 @@ server <- function(input, output) {
         }
         
         to_plot = plot_right_y +
-            scale_x_date(date_breaks = "3 days", date_labels = "%m/%d") + 
+            scale_x_date(date_breaks = "3 days", date_labels = "%m/%d/%y") + 
             # labs(title = "NYS COVID-19") +
             labs(title = paste(region, "新冠疫情数据", sep = ""), x = "日期") +
             # scale_x_date(name = "日期", date_breaks = "3 days") +
