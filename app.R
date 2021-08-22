@@ -305,10 +305,10 @@ server <- function(input, output) {
         colnames(zip_data) = c("Zipcode", "Positive", "Tested")
         positive = zip_data[zip_data$Zipcode == zip_code, ]$Positive
         tests = zip_data[zip_data$Zipcode == zip_code, ]$Tested
-        return_info = c("邮编为", zip_code, "的地区累计确诊 ", as.character(positive), 
-                        "，累计检测 ", as.character(tests), 
-                        "，确诊率为 ", format(round(positive/tests, 3), nsmall = 3),
-                        "。")
+        return_info = c("Area of ", zip_code, "has ", as.character(positive), 
+                        " total positive cases, ", as.character(tests), 
+                        " total tests, and its positive rate is ", format(round(positive/tests, 3), nsmall = 3),
+                        ".")
     }
     )
 }
